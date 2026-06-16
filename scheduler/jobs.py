@@ -9,13 +9,9 @@ from logger_config import get_logger
 
 logger = get_logger(__name__)
 
-
 def job():
-
     rows = run_scan()
-
     logger.info(f"Completed scan at {datetime.now()} - found {len(rows)} opportunities")
-
     save([
         {
             "scan_time": datetime.now().isoformat(),
@@ -29,13 +25,9 @@ def job():
         for r in rows
     ])
 
-
 def start_scheduler():
-
     job()
-
     schedule.every(15).minutes.do(job)
-
     while True:
 
         schedule.run_pending()

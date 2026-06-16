@@ -38,7 +38,7 @@ def create_authenticator():
     config = get_auth_config()
     
     authenticator = stauth.Authenticate(
-        credentials=config["usernames"],
+        credentials=config["username"],
         cookie_name="rsimomentum_auth",
         key="rsimomentum_key_123",  # Should be changed and stored in env var
         cookie_expiry_days=30

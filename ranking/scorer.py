@@ -4,7 +4,7 @@ logger = get_logger(__name__)
 
 
 def score(df):
-    \"\"\"Calculate composite score based on technical indicators.\"\"\"
+    # \"\"\"Calculate composite score based on technical indicators.\"\"\"
     try:
         r = df.iloc[-1]
 

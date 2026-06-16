@@ -2,9 +2,7 @@ from sqlalchemy import create_engine, text
 import os
 
 def initialize_database():
-
     db_url = os.getenv("DB_URL")  # comes from docker-compose
-
     engine = create_engine(
         db_url,
         echo=False,
