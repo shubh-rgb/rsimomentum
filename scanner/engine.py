@@ -4,6 +4,10 @@ from config import TOP_N
 from data.universe import get_universe
 from data.fetcher import fetch_batch
 from datetime import datetime
+from logger_config import get_logger
+
+logger = get_logger(__name__)
+
 def run_scan():
 
     universe = get_universe()   # now from DB (not CSV)
@@ -29,6 +33,7 @@ def run_scan():
             })
 
         except Exception as e:
-            print(f"Failed {symbol}: {e}")
+            logger.warning(f"Failed to process {symbol}: {e}\", exc_info=True)
+            continue
 
     return sorted(results, key=lambda x: x["score"], reverse=True)[:TOP_N]

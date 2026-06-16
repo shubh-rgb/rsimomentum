@@ -45,8 +45,13 @@ token.py
 logs/
 *.log
 
-# Data & data store (likely large or sensitive market data)
-data/
+# Data & data store (exclude large data files, but keep Python module code)
+# Large datasets and cache files
+data/**/*.csv
+data/**/*.parquet
+data/**/*.json
+data/**/cache/
+data/**/stock_data/
 data_store/
 
 # Database files

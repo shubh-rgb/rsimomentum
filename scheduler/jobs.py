@@ -5,29 +5,26 @@ from scanner.engine import run_scan
 from database.storage import save
 from tabulate import tabulate
 from datetime import datetime
+from logger_config import get_logger
+
+logger = get_logger(__name__)
 
 
 def job():
 
     rows = run_scan()
 
-    print("\nSCAN", datetime.now())
-
-    print(
-        tabulate(
-            rows,
-            headers="keys"
-        )
-    )
+    logger.info(f"Completed scan at {datetime.now()} - found {len(rows)} opportunities")
 
     save([
         {
-            "t": datetime.now().isoformat(),
-            "s": r["symbol"],
-            "sc": r["score"],
-            "cl": r["close"],
-            "r": r["rsi"],
-            "m": r["macd"]
+            "scan_time": datetime.now().isoformat(),
+            "symbol": r["symbol"],
+            "score": r["score"],
+            "close": r["close"],
+            "dma30": r.get("dma30", None),
+            "rsi": r["rsi"],
+            "macd": r["macd"]
         }
         for r in rows
     ])

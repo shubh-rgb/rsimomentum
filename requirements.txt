@@ -1,10 +1,23 @@
-kiteconnect
-psycopg2-binary
-sqlalchemy
-streamlit
-streamlit-autorefresh
-pandas
-plotly
-yfinance
-schedule
-tabulate
+# Core dependencies
+psycopg2-binary==2.9.9
+sqlalchemy==2.0.23
+pandas==2.1.4
+numpy==1.26.3
+
+# Web framework & visualization
+streamlit==1.28.1
+streamlit-authenticator==0.2.3
+streamlit-autorefresh==0.0.0.dev0
+plotly==5.18.0
+
+# Data fetching
+yfinance==0.2.32
+
+# Task scheduling
+schedule==1.2.0
+
+# Utilities
+tabulate==0.9.0
+
+# Security & monitoring (dev/optional)
+safety==2.3.5

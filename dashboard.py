@@ -4,6 +4,10 @@ import streamlit as st
 import plotly.express as px
 from sqlalchemy import create_engine
 from streamlit_autorefresh import st_autorefresh
+from logger_config import get_logger
+from auth import check_authentication, show_logout_button
+
+logger = get_logger(__name__)
 
 # --------------------------------------------------
 # CONFIG
@@ -18,10 +22,22 @@ st.set_page_config(
 st_autorefresh(interval=60000, key="refresh")
 
 # --------------------------------------------------
+# AUTHENTICATION
+# --------------------------------------------------
+
+if not check_authentication():
+    st.stop()
+
+# --------------------------------------------------
 # POSTGRES CONNECTION
 # --------------------------------------------------
 
 DB_URL = os.getenv("DB_URL")
+
+if not DB_URL:
+    logger.error("DB_URL environment variable not set")
+    st.error("Database connection not configured")
+    st.stop()
 
 engine = create_engine(DB_URL)
 
@@ -37,7 +53,8 @@ try:
     """, engine)
 
 except Exception as e:
-    st.error(f"Database Error: {e}")
+    logger.error(f"Database query failed: {e}", exc_info=True)
+    st.error("Failed to load scan results. Please try again later.")
     st.stop()
 
 # --------------------------------------------------
@@ -55,6 +72,9 @@ if df.empty:
 st.title("📈 Trade Predictor Dashboard")
 
 st.markdown("Real-time Stock Ranking Dashboard")
+
+# Show logout button in sidebar
+show_logout_button()
 
 selected = st.sidebar.selectbox(
     "Select Stock",
@@ -129,14 +149,43 @@ st.plotly_chart(fig2, use_container_width=True)
 # SEARCH
 # --------------------------------------------------
 
+import re
+
+def validate_symbol_input(symbol):
+    """
+    Validate stock symbol input to prevent ReDoS and injection attacks.
+    Allows: A-Z, 0-9, dash, underscore, dot (max 20 chars)
+    """
+    if not symbol:
+        return None
+    
+    # Remove whitespace
+    symbol = symbol.strip().upper()
+    
+    # Validate format: alphanumeric, dash, underscore, dot only (1-20 chars)
+    if not re.match(r"^[A-Z0-9._-]{1,20}$", symbol):
+        return None
+    
+    return symbol
+
 st.divider()
 st.subheader("🔍 Search Stock")
 
 search_symbol = st.text_input("Enter Symbol", placeholder="Example: RELIANCE")
 
 if search_symbol:
-    search_df = df[df["symbol"].str.contains(search_symbol.upper(), na=False)]
-    st.dataframe(search_df, use_container_width=True)
+    validated_symbol = validate_symbol_input(search_symbol)
+    
+    if validated_symbol is None:
+        st.error("Invalid symbol format. Use only letters, numbers, dash, underscore, dot (max 20 chars)")
+    else:
+        # Use regex=False to prevent ReDoS (Regex Denial of Service)
+        search_df = df[df["symbol"].str.contains(validated_symbol, na=False, regex=False)]
+        
+        if search_df.empty:
+            st.info(f"No results found for '{validated_symbol}'")
+        else:
+            st.dataframe(search_df, use_container_width=True)
 
 # --------------------------------------------------
 # WATCHLIST

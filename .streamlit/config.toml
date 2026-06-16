@@ -1,0 +1,31 @@
+[logger]
+level = "info"
+messageFormat = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+[client]
+# Minimize toolbar to reduce attack surface
+toolbarMode = "minimal"
+# Disable show console
+showErrorDetails = false
+
+[server]
+# Bind to all interfaces (behind firewall/proxy in production)
+address = "0.0.0.0"
+port = 8501
+headless = true
+
+# Security settings
+enableXsrfProtection = true
+
+# Connection settings
+maxUploadSize = 200
+
+# Timeouts to prevent resource exhaustion
+maxMessageSize = 41
+
+[browser]
+# Enforce gatherUsageStats off in production
+gatherUsageStats = false
+
+[theme]
+base = "light"

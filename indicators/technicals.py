@@ -1,11 +1,22 @@
 
 import pandas as pd
-def rsi(s,n=21):
-    d=s.diff()
-    up=d.clip(lower=0).rolling(n).mean()
-    dn=(-d.clip(upper=0)).rolling(n).mean()
-    rs=up/dn
-    return 100-(100/(1+rs))
+import numpy as np
+
+def rsi(s, n=21):
+    """Calculate RSI with protection against division by zero."""
+    d = s.diff()
+    up = d.clip(lower=0).rolling(n).mean()
+    dn = (-d.clip(upper=0)).rolling(n).mean()
+    
+    # Avoid division by zero: if no downward movement, return neutral RSI of 50
+    rs = up / dn.replace(0, np.nan)
+    
+    # Replace NaN and inf values with neutral RSI (50) for undefined situations
+    rsi_values = 100 - (100 / (1 + rs))
+    rsi_values = rsi_values.replace([np.inf, -np.inf], 50)
+    rsi_values = rsi_values.fillna(50)
+    
+    return rsi_values
 def add(df):
     df['DMA30']=df['Close'].rolling(30).mean()
     m=df['Close'].rolling(20).mean()
