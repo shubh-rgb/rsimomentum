@@ -1,0 +1,10 @@
+kiteconnect
+psycopg2-binary
+sqlalchemy
+streamlit
+streamlit-autorefresh
+pandas
+plotly
+yfinance
+schedule
+tabulate

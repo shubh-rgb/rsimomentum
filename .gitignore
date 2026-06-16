@@ -1,0 +1,86 @@
+# ======================
+# Python
+# ======================
+__pycache__/
+__pycache__/*
+__pycache__/config.cpython-312.pyc
+__pycache__/token.cpython-312.pyc
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+MANIFEST
+
+# Virtual Environment
+venv/
+.venv/
+env/
+ENV/
+
+# Unit test / coverage
+.coverage
+.pytest_cache/
+htmlcov/
+coverage.xml
+
+# mypy
+.mypy_cache/
+
+# ======================
+# Project Specific
+# ======================
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+token.py
+
+# Logs
+logs/
+*.log
+
+# Data & data store (likely large or sensitive market data)
+data/
+data_store/
+
+# Database files
+database/*.db
+database/*.sqlite
+database/*.sqlite3
+
+# Scheduler runtime artifacts
+scheduler/__pycache__/
+
+# ======================
+# Docker
+# ======================
+# Keep Dockerfile & docker-compose.yml tracked, ignore runtime artifacts
+*.env.docker
+
+# ======================
+# VS Code / IDE
+# ======================
+.vscode/
+.idea/
+*.code-workspace
+
+# ======================
+# OS Files
+# ======================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ======================
+# Archives
+# ======================
+*.zip
+*.tar.gz
+*.rar
+full_stock_scanner.zip

@@ -1,0 +1,47 @@
+version: "3.9"
+
+services:
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: trader
+      POSTGRES_PASSWORD: traderpass
+      POSTGRES_DB: marketdb
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U trader -d marketdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  scanner:
+    build: .
+    command: python main.py
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_URL: postgresql://trader:traderpass@db:5432/marketdb
+    volumes:
+      - ./logs:/app/logs
+    restart: always
+
+  dashboard:
+    build: .
+    command: streamlit run dashboard.py --server.address=0.0.0.0
+    ports:
+      - "8501:8501"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_URL: postgresql://trader:traderpass@db:5432/marketdb
+    restart: always
+
+volumes:
+  pgdata:
